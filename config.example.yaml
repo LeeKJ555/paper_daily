@@ -1,0 +1,168 @@
+run:
+  max_papers_per_run: 20
+  lookback_days: 7
+  timezone: Asia/Shanghai
+  require_openai_key: true
+
+storage:
+  metadata_path: data/papers.jsonl
+  source_cache_path: data/source_cache.jsonl
+  summaries_dir: summaries
+  cache_dir: .paper-daily-cache
+  commit_pdfs: false
+
+pdf:
+  download_open_access: true
+  max_pdf_mb: 30
+  extraction_max_chars: 36000
+  focused_excerpt_chars: 18000
+
+ranking:
+  minimum_score: 5
+  arxiv_minimum_score: 8
+  title_weight: 4
+  abstract_weight: 1
+  venue_weight: 3
+  pdf_weight: 2
+  recent_weight: 2
+  negative_keyword_weight: 5
+  negative_keywords:
+    - cryptographic
+    - cryptography
+    - authentication
+    - biometric
+    - voice
+    - AI safety
+    - social-hydrological
+    - water reuse
+  arxiv_required_keywords:
+    - operating system
+    - OS kernel
+    - Linux kernel
+    - kernel
+    - eBPF
+    - file system
+    - storage system
+    - tiered memory
+    - memory tiering
+    - heterogeneous memory
+    - CXL
+    - NUMA
+    - NVM
+    - virtual memory
+    - scheduler
+
+topics:
+  - name: systems
+    keywords:
+      - operating system
+      - distributed system
+      - storage system
+      - file system
+      - runtime system
+      - scheduler
+      - resource management
+      - virtualization
+      - datacenter system
+  - name: tiered-memory
+    keywords:
+      - tiered memory
+      - memory tiering
+      - heterogeneous memory
+      - CXL
+      - NUMA
+      - NVM
+      - page migration
+      - remote memory
+      - disaggregated memory
+  - name: os-kernel
+    keywords:
+      - OS kernel
+      - Linux kernel
+      - kernel
+      - eBPF
+      - syscall
+      - virtual memory
+      - kernel scheduler
+      - driver
+      - kernel bypass
+      - isolation
+
+sources:
+  arxiv:
+    enabled: true
+    categories:
+      - cs.OS
+      - cs.DC
+      - cs.PF
+      - cs.AR
+    max_results: 80
+  openalex:
+    enabled: true
+    max_results: 100
+    max_queries: 8
+    per_query: 25
+    required_context_keywords:
+      - operating system
+      - kernel
+      - eBPF
+      - file system
+      - storage
+      - CXL
+      - NUMA
+      - virtual memory
+      - distributed system
+      - datacenter
+      - database
+      - scheduler
+    negative_keywords:
+      - gravitational
+      - galaxy
+      - kabbalah
+      - water
+      - social-hydrological
+      - railway
+    queries:
+      - operating system
+      - kernel
+      - tiered memory
+      - CXL memory
+      - distributed system
+      - storage system
+      - file system
+      - virtual memory
+  dblp:
+    enabled: true
+    venues:
+      - SOSP
+      - OSDI
+      - NSDI
+      - FAST
+      - USENIX ATC
+      - EuroSys
+      - ASPLOS
+      - SIGCOMM
+      - SoCC
+    max_results_per_query: 30
+    max_results_per_venue: 50
+    max_queries: 12
+    years_back: 3
+  usenix:
+    enabled: true
+    events:
+      - osdi
+      - nsdi
+      - fast
+      - atc
+    weekly_years_back: 1
+    bootstrap_years_back: 3
+    max_results: 120
+    max_results_per_event: 30
+    include_unpublished: false
+
+summary:
+  provider: openai
+  model: ${OPENAI_MODEL:gpt-4o-mini}
+  api_key_env: OPENAI_API_KEY
+  base_url:
+  max_input_chars: 42000

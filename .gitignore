@@ -1,0 +1,16 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# PDF caches and temporary downloads are intentionally not committed.
+papers/
+.paper-daily-cache/
+
+# Keep generated markdown and durable metadata versionable.
+!summaries/
+!data/

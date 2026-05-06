@@ -1,0 +1,42 @@
+name: Weekly Paper Summary
+
+on:
+  schedule:
+    # Wednesday 23:00 UTC = Thursday 07:00 Asia/Shanghai.
+    - cron: "0 23 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Run paper weekly
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+          DEEPSEEK_MODEL: deepseek-chat
+        run: paper-daily run
+
+      - name: Commit generated summaries
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update weekly paper summaries"
+          file_pattern: "summaries/**/*.md data/papers.jsonl data/source_cache.jsonl"
